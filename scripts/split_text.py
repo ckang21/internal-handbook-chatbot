@@ -2,22 +2,21 @@
 
 import os
 from typing import List
-import nltk
-from nltk.tokenize import sent_tokenize
-
-nltk.download("punkt")
 
 def load_handbook(filepath: str) -> str:
     with open(filepath, "r", encoding="utf-8") as f:
         return f.read()
 
 def chunk_text(text: str, max_tokens: int = 500) -> List[str]:
-    sentences = sent_tokenize(text)
+    sentences = text.split('.')
     chunks = []
     current_chunk = ""
 
     for sentence in sentences:
-        if len((current_chunk + sentence).split()) > max_tokens:
+        sentence = sentence.strip()
+        if not sentence:
+            continue
+        if len((current_chunk + " " + sentence).split()) > max_tokens:
             chunks.append(current_chunk.strip())
             current_chunk = sentence
         else:
@@ -29,7 +28,7 @@ def chunk_text(text: str, max_tokens: int = 500) -> List[str]:
     return chunks
 
 if __name__ == "__main__":
-    handbook_path = "data/handbook.txt"  # Update this if your path is different
+    handbook_path = "data/handbook.txt"
     output_path = "data/chunks.txt"
 
     text = load_handbook(handbook_path)
